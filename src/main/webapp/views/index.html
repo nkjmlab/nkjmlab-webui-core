@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" lang="ja">
+<head>
+<object th:include="/templates/header.html::meta-fragment"
+	th:remove="tag"></object>
+<link rel="stylesheet" href="../css/top.css" />
+<title>MAGCruiseCityWalk</title>
+<script>
+	$(function() {
+		$(".city a").click(
+				function() {
+					var group_id = $(this).attr("id");
+					var data = new JsonRpcClient(new JsonRpcRequest(
+							getBaseUrl(), "getInitialData", [ group_id ],
+							function(data) {
+								saveCityWalkData(data.result);
+								location.href = "login.html" + "#" + group_id;
+							})).rpc();
+				});
+	});
+</script>
+</head>
+<body>
+	<div class="container">
+		<div class="row" th:fragment="top-menu">
+			<div class="col-sm-12">
+				<div id="mag-nav">
+					<span id="nav-title"></span>
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-sm-12 description">
+				このサービスは〜〜〜による〜〜〜のための〜〜〜サービスです。これにより〜〜〜が〜〜〜になることを目指しています。</div>
+			<div class="col-sm-12">
+				<div class="city">
+					<a href="#" id="waseda">Waseda 早稲田大学</a>
+				</div>
+				<div class="city">
+					<a href="#" id="wasedasai2016">早稲田祭2016</a>
+				</div>
+				<div class="city">
+					<a href="#" id="toho">Toho 東邦大学</a>
+				</div>
+				<div class="city">
+					<a href="#" id="kyoto">Kyoto 京都</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

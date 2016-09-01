@@ -1,0 +1,30 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" lang="ja">
+<head th:fragment="meta-fragment">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+<script src="../js/citywalk.js"></script>
+</head>
+<div class="container">
+	<div class="row" th:fragment="top-menu">
+		<div class="col-sm-12">
+			<div id="mag-nav">
+				<span id="nav-title">MAGCruiseCityWalk</span>
+				<div id="nav-menu" class="dropdown pull-right">
+					 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+						<i class="glyphicon glyphicon-cog icon-white"></i>
+						<b class="caret"></b>
+					</a>
+					<ul class="dropdown-menu">
+					    <li><a href="login.html">ログアウト</a></li>
+						<li><a href="visited-checkpoints.html">訪問済みチェックポイント</a></li>
+						<li><a href="badge.html">バッジ</a></li>
+						<li><a href="ranking.html">ランキング</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</html>

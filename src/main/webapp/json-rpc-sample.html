@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="js/citywalk-dev.js"></script>
+<script>
+	var u = parseUri(document.URL);
+	var urlPrefix = u.protocol + "://" + u.authority + "/"
+			+ u.directory.split("/")[1] + "/";
+	var url = urlPrefix + "CityWalkService";
+
+	function getEventsByWebsocket(wsUrl) {
+		var connection = new WebSocket(wsUrl);
+		connection.onmessage = function(e) {
+			var messages = JSON.parse(e.data);
+			for (var i = 0; i < messages.length; i++) {
+				$('#notification').append(JSON.stringify(messages[i]));
+			}
+		};
+		return {
+			abort : function() {
+				connection.close();
+			}
+		};
+	}
+
+	$(function() {
+		$('#insert-activity')
+				.on(
+						'click',
+						function() {
+							var arg = {
+								userId : "ayaki",
+								taskId : "task2",
+								score : 9.0,
+								input : {
+									instanceClass : "org.magcruise.citywalk.model.content.SelectionInput",
+									value : "1"
+								}
+							};
+							new JsonRpcClient(new JsonRpcRequest(url,
+									"addActivity", [ arg ])).rpc();
+						});
+	});
+	$(function() {
+		$('#login').on(
+				'click',
+				function() {
+					new JsonRpcClient(new JsonRpcRequest(url, "login", [
+							"ayaki", "houchimin" ])).rpc();
+				});
+	});
+	$(function() {
+		var uri = new parseUri(location);
+		var wsUrl = 'ws://' + uri.host + ":" + uri.port + "/"
+				+ uri.path.split("/")[1] + "/websocket/newEvents/" + "ayaki";
+		getEventsByWebsocket(wsUrl);
+	});
+
+	$(function() {
+
+		$('#files')
+				.on(
+						'change',
+						function handleFileSelect(evt) {
+							var files = evt.target.files;
+							for (var i = 0; i < files.length; i++) {
+								if (!files[i].type.match('image.*')) {
+									continue;
+								}
+								var reader = new FileReader();
+
+								reader.onload = (function(theFile) {
+									return function(fileContent) {
+										$('#image_outputs')
+												.append(
+														$('<span>')
+																.append(
+																		$(
+																				'<img>')
+																				.attr(
+																						'title',
+																						escape(theFile.name))
+																				.attr(
+																						'src',
+																						fileContent.target.result)));
+										new JsonRpcClient(new JsonRpcRequest(
+												url, "uploadImage",
+												[ fileContent.target.result ]))
+												.rpc();
+									};
+								})(files[i]);
+								reader.readAsDataURL(files[i]);
+							}
+						});
+	});
+</script>
+</head>
+<body>
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-12">
+				<h1>JSON-RPC API呼び出しテスト</h1>
+				<a href="/magcruise-citywalk-server/CityWalkService">CityWalkService
+					JSON-RPC API</a>
+				<h1>JSON-RPCでInsert</h1>
+				<div>
+					<a id="insert-activity" class="btn btn-primary">insert activity</a>
+					<a id="login" class="btn btn-primary">login</a>
+				</div>
+				<input type="file" id="files" name="files[]" multiple />
+				<output id="image_outputs"></output>
+				<div id="result"></div>
+				<h1>Websocketで通知を取得</h1>
+				<div id="notification" class="well"></div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

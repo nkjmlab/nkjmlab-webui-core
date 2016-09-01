@@ -1,0 +1,18 @@
+#distance {
+  margin: 10px;
+  color: #38A997;
+  letter-spacing: 0.3px;
+  font-size: 36px; }
+
+#btn-next {
+  margin: 10px;
+  padding-left: 10px;
+  padding-right: 10px; }
+
+#compass {
+  margin-bottom: 10px;
+  width: 200px;
+  height: 200px; }
+
+#map {
+  height: 200px; }
