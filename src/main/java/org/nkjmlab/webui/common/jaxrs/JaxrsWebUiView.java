@@ -1,5 +1,7 @@
 package org.nkjmlab.webui.common.jaxrs;
 
+import java.util.Map;
+
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -35,15 +37,15 @@ public class JaxrsWebUiView {
 	@Context
 	protected ServletContext servletContext;
 
-	public String getRelativePath() {
-		return "/views/";
+	public String getApplicationPath() {
+		return "/views";
 	}
 
 	@GET
 	@Path("/")
 	@Produces(MediaType.TEXT_HTML)
 	public Viewable index() {
-		return getHtmlView("index");
+		return getHtmlView("/", "index", getParameterMap());
 	}
 
 	/**
@@ -56,18 +58,39 @@ public class JaxrsWebUiView {
 	@GET
 	@Path("/{pageName}.html")
 	@Produces(MediaType.TEXT_HTML)
-	public Viewable getWebPage(@PathParam("pageName") String pageName) {
-		return getHtmlView(pageName);
+	public Viewable getHtml(@PathParam("pageName") String pageName) {
+		return getHtmlView("/", pageName, getParameterMap());
 	}
 
-	public Viewable getHtmlView(String pageName) {
+	@GET
+	@Path("/{dirs:.*?}/{pageName}.html")
+	@Produces(MediaType.TEXT_HTML)
+	public Viewable getHtml(@PathParam("dirs") String dirs,
+			@PathParam("pageName") String pageName) {
+		return getHtmlView("/" + dirs + "/", pageName, getParameterMap());
+	}
+
+	public Viewable getHtmlView(String dirs, String pageName, Map<String, String[]> params) {
 		try {
-			return new Viewable(getRelativePath() + pageName + ".html");
+			return new Viewable(getHtmlFilePath(dirs, pageName));
 		} catch (Exception e) {
 			log.error(e, e);
 			throw new RuntimeException(e);
 		}
+	}
 
+	public String getDirPath(String dirs) {
+		return getApplicationPath() + dirs;
+	}
+
+	public String getHtmlFilePath(String dirs, String pageName) {
+		return getDirPath(dirs) + pageName + ".html";
+	}
+
+	protected Map<String, String[]> getParameterMap() {
+		@SuppressWarnings("unchecked")
+		Map<String, String[]> parameterMap = (Map<String, String[]>) request.getParameterMap();
+		return parameterMap;
 	}
 
 }

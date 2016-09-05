@@ -26,12 +26,15 @@ import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 /**
+ * Default variable name is "ctx".
  * @author nkjm
  *
  */
 @Provider
 public class ThymeleafTemplateProcessor
 		extends AbstractTemplateProcessor<String> implements Serializable {
+
+	private static String variableName = "ctx";
 
 	protected static Logger log = ServletLogManager.getLogger();
 
@@ -70,10 +73,18 @@ public class ThymeleafTemplateProcessor
 			MediaType mediaType, MultivaluedMap<String, Object> httpHeaders,
 			OutputStream out) throws IOException {
 		WebContext context = new WebContext(request, response, servletContext);
-		context.setVariable("ctx", viewable.getModel());
+		context.setVariable(getVariableName(), viewable.getModel());
 		Writer writer = new OutputStreamWriter(out);
 		templateEngine.process(templateReference, context, writer);
 		writer.flush();
+	}
+
+	private static String getVariableName() {
+		return variableName;
+	}
+
+	public static void setVariableName(String variableName2) {
+		variableName = variableName2;
 	}
 
 }
