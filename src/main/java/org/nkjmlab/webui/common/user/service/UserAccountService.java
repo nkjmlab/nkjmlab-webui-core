@@ -4,7 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.logging.log4j.Logger;
 import org.nkjmlab.util.db.DbClient;
-import org.nkjmlab.util.log4j.ServletLogManager;
+import org.nkjmlab.util.log4j.LogManager;
 import org.nkjmlab.webui.common.user.model.UserAccount;
 import org.nkjmlab.webui.common.user.model.UserAccountsTable;
 import org.nkjmlab.webui.common.user.model.UserSession;
@@ -14,7 +14,7 @@ import jp.go.nict.langrid.servicecontainer.service.AbstractService;
 
 public class UserAccountService extends AbstractService implements UserAccountServiceInterface {
 
-	protected static Logger log = ServletLogManager.getLogger();
+	protected static Logger log = LogManager.getLogger();
 
 	private UserAccountsTable users;
 

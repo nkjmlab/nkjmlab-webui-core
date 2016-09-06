@@ -4,11 +4,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.logging.log4j.Logger;
-import org.nkjmlab.util.log4j.ServletLogManager;
+import org.nkjmlab.util.log4j.LogManager;
 
 public class UserSession {
 
-	protected static Logger log = ServletLogManager.getLogger();
+	protected static Logger log = LogManager.getLogger();
 
 	private static final String USER_ID = "userId";
 

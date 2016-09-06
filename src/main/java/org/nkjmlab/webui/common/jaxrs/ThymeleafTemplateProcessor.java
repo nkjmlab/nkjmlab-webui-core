@@ -20,13 +20,13 @@ import javax.ws.rs.ext.Provider;
 import org.apache.logging.log4j.Logger;
 import org.glassfish.jersey.server.mvc.Viewable;
 import org.glassfish.jersey.server.mvc.spi.AbstractTemplateProcessor;
-import org.nkjmlab.util.log4j.ServletLogManager;
+import org.nkjmlab.util.log4j.LogManager;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 /**
- * Default variable name is "ctx".
+ * Default variable name is "model".
  * @author nkjm
  *
  */
@@ -34,9 +34,7 @@ import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 public class ThymeleafTemplateProcessor
 		extends AbstractTemplateProcessor<String> implements Serializable {
 
-	private static String variableName = "ctx";
-
-	protected static Logger log = ServletLogManager.getLogger();
+	protected static Logger log = LogManager.getLogger();
 
 	@Context
 	private HttpServletRequest request;
@@ -48,6 +46,8 @@ public class ThymeleafTemplateProcessor
 	private ServletContext servletContext;
 
 	private TemplateEngine templateEngine;
+
+	private static String variableName = "model";
 
 	@Inject
 	public ThymeleafTemplateProcessor(Configuration config, ServletContext servletContext) {

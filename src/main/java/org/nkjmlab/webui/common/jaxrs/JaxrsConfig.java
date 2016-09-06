@@ -3,7 +3,7 @@ package org.nkjmlab.webui.common.jaxrs;
 import org.apache.logging.log4j.Logger;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.mvc.MvcFeature;
-import org.nkjmlab.util.log4j.ServletLogManager;
+import org.nkjmlab.util.log4j.LogManager;
 
 /**
  * Application config class. add {@code @ApplicationPath} Annotation.
@@ -12,10 +12,10 @@ import org.nkjmlab.util.log4j.ServletLogManager;
  *
  */
 public class JaxrsConfig extends ResourceConfig {
-	protected static Logger log = ServletLogManager.getLogger();
+	protected static Logger log = LogManager.getLogger();
 
 	public JaxrsConfig() {
-		this("ctx");
+		this("model");
 	}
 
 	public JaxrsConfig(String variableName) {

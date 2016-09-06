@@ -1,4 +1,4 @@
-package org.nkjmlab.webui.common.jaxrs;
+package org.nkjmlab.webui.common.thymeleaf;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -94,6 +94,7 @@ public class SimplePagination {
 
 	public String getUrlForOtherPage(HttpServletRequest request, long page, String encoding)
 			throws UnsupportedEncodingException {
+		@SuppressWarnings("unchecked")
 		Map<String, String[]> params = request.getParameterMap();
 		StringBuilder builder = new StringBuilder();
 		builder.append(request.getRequestURI());
