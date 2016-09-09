@@ -75,7 +75,10 @@ public class ThymeleafTemplateProcessor
 			OutputStream out) throws IOException {
 		WebContext context = new WebContext(request, response, servletContext);
 		Object model = viewable.getModel();
-		if (model instanceof Map) {
+
+		if (model instanceof ThymeleafModel) {
+			context.setVariables(((ThymeleafModel) model).getVariableMap());
+		} else if (model instanceof Map) {
 			@SuppressWarnings("unchecked")
 			Map<String, Object> variables = (Map<String, Object>) model;
 			context.setVariables(variables);

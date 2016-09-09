@@ -70,22 +70,16 @@ public class JaxrsView {
 		return request.getServletPath();
 	}
 
-	protected Viewable createView(String pathFromViewRoot,
-			Map<String, ? extends Object> variables) {
-		Object model = variables;
-		return createView(pathFromViewRoot, model);
+	public Viewable createView(String pathToFileFromViewRoot, ThymeleafModel model) {
+		return new Viewable("/" + viewRoot + pathToFileFromViewRoot, model);
 	}
 
-	protected Viewable createView(String pathFromViewRoot, Object model) {
-		return new Viewable("/" + viewRoot + pathFromViewRoot, model);
-	}
-
-	protected Viewable createView(String pathFromViewRoot) {
-		if (pathFromViewRoot.endsWith("/")) {
-			pathFromViewRoot += "index.html";
+	public Viewable createView(String pathToFileFromViewRoot) {
+		if (pathToFileFromViewRoot.endsWith("/")) {
+			pathToFileFromViewRoot += "index.html";
 		}
 
-		return new Viewable("/" + viewRoot + pathFromViewRoot);
+		return new Viewable("/" + viewRoot + pathToFileFromViewRoot);
 	}
 
 	protected String getCurrentUserId() {
