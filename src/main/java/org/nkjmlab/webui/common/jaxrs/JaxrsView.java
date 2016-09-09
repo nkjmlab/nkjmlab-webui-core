@@ -15,6 +15,7 @@ import javax.ws.rs.core.MediaType;
 import org.apache.logging.log4j.Logger;
 import org.glassfish.jersey.server.mvc.Viewable;
 import org.nkjmlab.util.log4j.LogManager;
+import org.nkjmlab.webui.common.user.model.UserSession;
 
 /**
  * @author nkjm
@@ -69,6 +70,12 @@ public class JaxrsView {
 		return request.getServletPath();
 	}
 
+	protected Viewable createView(String pathFromViewRoot,
+			Map<String, ? extends Object> variables) {
+		Object model = variables;
+		return createView(pathFromViewRoot, model);
+	}
+
 	protected Viewable createView(String pathFromViewRoot, Object model) {
 		return new Viewable("/" + viewRoot + pathFromViewRoot, model);
 	}
@@ -79,6 +86,14 @@ public class JaxrsView {
 		}
 
 		return new Viewable("/" + viewRoot + pathFromViewRoot);
+	}
+
+	protected String getCurrentUserId() {
+		return getCurrentUserSession().getUserId();
+	}
+
+	protected UserSession getCurrentUserSession() {
+		return UserSession.of(request);
 	}
 
 }

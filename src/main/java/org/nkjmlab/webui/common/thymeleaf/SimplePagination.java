@@ -22,30 +22,30 @@ public class SimplePagination {
 	public static final int LEFT_CURRENT = 2;
 	public static final int RIGHT_CURRENT = 3;
 
-	private final long page;
-	private final long perPage;
-	private final long totalCount;
+	private final int page;
+	private final int perPage;
+	private final int totalCount;
 
-	public SimplePagination(long page, long perPage, long totalCount) {
+	public SimplePagination(int page, int perPage, int totalCount) {
 		this.page = page;
 		this.perPage = perPage;
 		this.totalCount = totalCount;
 	}
 
-	public long getPage() {
+	public int getPage() {
 		return this.page;
 	}
 
-	public long getPerPage() {
+	public int getPerPage() {
 		return this.perPage;
 	}
 
-	public long getTotalCount() {
+	public int getTotalCount() {
 		return this.totalCount;
 	}
 
-	public long getTotalPage() {
-		return (long) Math.ceil(this.totalCount / (double) this.perPage);
+	public int getTotalPage() {
+		return (int) Math.ceil(this.totalCount / (double) this.perPage);
 	}
 
 	public boolean hasPrev() {
@@ -56,29 +56,29 @@ public class SimplePagination {
 		return this.page < getTotalPage();
 	}
 
-	public long getFirstPage() {
+	public int getFirstPage() {
 		return this.totalCount == 0 ? 0 : ((this.page - 1) * this.perPage) + 1;
 	}
 
-	public long getLastPage() {
-		long last = this.page * this.perPage;
+	public int getLastPage() {
+		int last = this.page * this.perPage;
 		return last < this.totalCount ? last : this.totalCount;
 	}
 
-	public List<Long> getPages() {
+	public List<Integer> getPages() {
 		return getPages(LEFT_EDGE, LEFT_CURRENT, RIGHT_CURRENT, RIGHT_EDGE);
 	}
 
-	public List<Long> getPages(int leftEdge, int leftCurrent, int rightCurrent, int rightEdge) {
-		long last = 0;
-		long pages = getTotalPage();
-		List<Long> result = new LinkedList<>();
-		for (long i = 1; i <= pages; i++) {
+	public List<Integer> getPages(int leftEdge, int leftCurrent, int rightCurrent, int rightEdge) {
+		int last = 0;
+		int pages = getTotalPage();
+		List<Integer> result = new LinkedList<>();
+		for (int i = 1; i <= pages; i++) {
 			if ((i <= leftEdge) ||
 					((i > (this.page - leftCurrent - 1)) && (i < (this.page + rightCurrent))) ||
 					(i > pages - rightEdge)) {
 				if (last + 1 != i) {
-					result.add(-1L);
+					result.add(-1);
 				}
 				result.add(i);
 				last = i;
@@ -87,12 +87,12 @@ public class SimplePagination {
 		return result;
 	}
 
-	public String getUrlForOtherPage(HttpServletRequest request, long page)
+	public String getUrlForOtherPage(HttpServletRequest request, int page)
 			throws UnsupportedEncodingException {
 		return getUrlForOtherPage(request, page, DEFAULT_ENCODING);
 	}
 
-	public String getUrlForOtherPage(HttpServletRequest request, long page, String encoding)
+	public String getUrlForOtherPage(HttpServletRequest request, int page, String encoding)
 			throws UnsupportedEncodingException {
 		@SuppressWarnings("unchecked")
 		Map<String, String[]> params = request.getParameterMap();

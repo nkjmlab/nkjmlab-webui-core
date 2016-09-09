@@ -6,6 +6,7 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Serializable;
 import java.io.Writer;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
@@ -73,7 +74,14 @@ public class ThymeleafTemplateProcessor
 			MediaType mediaType, MultivaluedMap<String, Object> httpHeaders,
 			OutputStream out) throws IOException {
 		WebContext context = new WebContext(request, response, servletContext);
-		context.setVariable(getVariableName(), viewable.getModel());
+		Object model = viewable.getModel();
+		if (model instanceof Map) {
+			@SuppressWarnings("unchecked")
+			Map<String, Object> variables = (Map<String, Object>) model;
+			context.setVariables(variables);
+		} else {
+			context.setVariable(getVariableName(), model);
+		}
 		Writer writer = new OutputStreamWriter(out);
 		templateEngine.process(templateReference, context, writer);
 		writer.flush();
