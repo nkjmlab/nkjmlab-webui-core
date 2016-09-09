@@ -37,23 +37,23 @@ public class JaxrsView {
 	@Context
 	protected ServletContext servletContext;
 
-	/** relative path from src/main/webapp **/
-	private String viewRoot;
+	/** relative path from src/main/webapp.  src/main/webapp is regarded as / **/
+	private String viewRootPath;
 
 	public JaxrsView() {
-		this.viewRoot = "jaxrs-view-root";
+		this.viewRootPath = "/jaxrs-view-root";
 	}
 
 	@GET
-	@Path("/{path:.*}")
+	@Path("{path:.*}")
 	@Produces(MediaType.TEXT_HTML)
 	public Viewable getView() {
 		return getView(request.getPathInfo(), getParameterMap());
 	}
 
-	public Viewable getView(String filePathFromViewRoot, Map<String, String[]> params) {
+	public Viewable getView(String pathInfo, Map<String, String[]> params) {
 		try {
-			return new Viewable(filePathFromViewRoot);
+			return new Viewable(pathInfo);
 		} catch (Exception e) {
 			log.error(e, e);
 			throw new RuntimeException(e);
@@ -66,20 +66,22 @@ public class JaxrsView {
 		return parameterMap;
 	}
 
-	public String getApplicationPath() {
-		return request.getServletPath();
+	public Viewable createView(String pathInfo, ThymeleafModel model) {
+		return new Viewable(getViewRootPath() + pathInfo, model);
 	}
 
-	public Viewable createView(String pathToFileFromViewRoot, ThymeleafModel model) {
-		return new Viewable("/" + viewRoot + pathToFileFromViewRoot, model);
-	}
-
-	public Viewable createView(String pathToFileFromViewRoot) {
-		if (pathToFileFromViewRoot.endsWith("/")) {
-			pathToFileFromViewRoot += "index.html";
+	public Viewable createView(String pathInfo) {
+		if (pathInfo.endsWith("/")) {
+			pathInfo += "index.html";
 		}
+		if (!pathInfo.startsWith("/")) {
+			pathInfo = "/" + pathInfo;
+		}
+		return new Viewable(getViewRootPath() + pathInfo);
+	}
 
-		return new Viewable("/" + viewRoot + pathToFileFromViewRoot);
+	private String getViewRootPath() {
+		return viewRootPath;
 	}
 
 	protected String getCurrentUserId() {
@@ -88,6 +90,11 @@ public class JaxrsView {
 
 	protected UserSession getCurrentUserSession() {
 		return UserSession.of(request);
+	}
+
+	protected String getServletUrl() {
+		return request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
+				+ request.getContextPath() + request.getServletPath();
 	}
 
 }

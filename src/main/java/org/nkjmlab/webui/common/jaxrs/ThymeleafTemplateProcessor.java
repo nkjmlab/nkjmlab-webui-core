@@ -85,9 +85,10 @@ public class ThymeleafTemplateProcessor
 		} else {
 			context.setVariable(getVariableName(), model);
 		}
-		Writer writer = new OutputStreamWriter(out);
-		templateEngine.process(templateReference, context, writer);
-		writer.flush();
+		try (Writer writer = new OutputStreamWriter(out)) {
+			templateEngine.process(templateReference, context, writer);
+			writer.flush();
+		}
 	}
 
 	private static String getVariableName() {
