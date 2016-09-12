@@ -3,6 +3,7 @@ package org.nkjmlab.webui.common.user.model;
 import org.nkjmlab.util.db.DbClient;
 import org.nkjmlab.util.db.Keyword;
 import org.nkjmlab.util.db.RelationalModel;
+import org.nkjmlab.webui.common.user.model.UserAccount.Role;
 
 public class UserAccountsTable extends RelationalModel<UserAccount> {
 
@@ -44,7 +45,15 @@ public class UserAccountsTable extends RelationalModel<UserAccount> {
 	public void register(UserAccount userAccount) {
 		String sha1HashedButWithoutSaltPassword = userAccount.getPassword();
 		userAccount.setPasswordWithoutSalt(sha1HashedButWithoutSaltPassword);
+		if (exists(userAccount)) {
+			throw new RuntimeException(userAccount.getUserId() + " is already registered:");
+		}
 		insert(userAccount);
+	}
+
+	public boolean isAdmin(String userId, String groupId) {
+		UserAccount user = findByUserIdAndGroupId(userId, groupId);
+		return user.getRole().equals(Role.ADMIN.name());
 	}
 
 }

@@ -24,7 +24,9 @@ public class UserAccountService extends AbstractService implements UserAccountSe
 
 	@Override
 	public void register(UserAccount account) {
+		String inputPassword = account.getPassword();
 		userAccountsTable.register(account);
+		login(account.getUserId(), account.getGroupId(), inputPassword);
 	}
 
 	@Override
@@ -40,9 +42,12 @@ public class UserAccountService extends AbstractService implements UserAccountSe
 	@Override
 	public boolean login(String userId, String groupId, String password) {
 		UserSession userSession = getUserSession();
-		userAccountsTable.findByUserIdAndGroupId(userId, groupId);
+		UserAccount userAccount = userAccountsTable.findByUserIdAndGroupId(userId, groupId);
+		if (userAccount == null) {
+			throw new RuntimeException(userId + "(in " + groupId + ") is not registered:");
+		}
 		if (!userAccountsTable.validate(userId, groupId, password)) {
-			return false;
+			throw new RuntimeException("Password is not correct:");
 		}
 		userSession.setMaxInactiveInterval(10 * 60 * 60);
 		userSession.setUserId(userId);

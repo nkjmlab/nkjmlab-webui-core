@@ -43,13 +43,11 @@ public class UserSession {
 	}
 
 	public String getGroupId() {
-		return getAttribute(GROUP_ID) == null ? ""
-				: getAttribute(GROUP_ID).toString();
+		return getAttribute(GROUP_ID) == null ? "" : getAttribute(GROUP_ID).toString();
 	}
 
 	public String getUserId() {
-		return getAttribute(USER_ID) == null ? ""
-				: getAttribute(USER_ID).toString();
+		return getAttribute(USER_ID) == null ? "" : getAttribute(USER_ID).toString();
 	}
 
 	public String getId() {

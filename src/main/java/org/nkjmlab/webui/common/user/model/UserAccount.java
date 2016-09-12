@@ -17,13 +17,27 @@ public class UserAccount implements RelatedWithTable {
 	private Date created = new Timestamp(new Date().getTime());
 	private Date modified = created;
 	private String userId;
-	private String groupId;
+	private String groupId = "";
 	private String name;
 	private String password;
-	private String role;
+	private String role = Role.ADMIN.name();
 	private String options;
 	private String mailAddress;
 	private String language;
+
+	public enum Role {
+		ADMIN(9), DEVELOPER(7), OPERATOR(5), RESTRICTED_OPERATOR(4), USER(3);
+
+		private int level;
+
+		Role(int level) {
+			this.level = level;
+		}
+
+		public int getLevel() {
+			return level;
+		}
+	}
 
 	public UserAccount() {
 	}
