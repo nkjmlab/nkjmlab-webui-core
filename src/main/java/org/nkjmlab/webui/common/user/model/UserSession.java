@@ -36,8 +36,10 @@ public class UserSession {
 		}
 	}
 
-	public UserAccount getUser() {
-		return new UserAccount(getUserId(), getGroupId());
+	public boolean logout() {
+		setUserId("");
+		setGroupId("");
+		return true;
 	}
 
 	public String getGroupId() {

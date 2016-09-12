@@ -16,35 +16,42 @@ public class UserAccountService extends AbstractService implements UserAccountSe
 
 	protected static Logger log = LogManager.getLogger();
 
-	private UserAccountsTable users;
+	private UserAccountsTable userAccountsTable;
 
 	public UserAccountService(DbClient client) {
-		users = new UserAccountsTable(client);
+		userAccountsTable = new UserAccountsTable(client);
 	}
 
 	@Override
-	public boolean login(String userId, String groupId) {
-		UserSession userSession = UserSession.of(getRequest());
-		users.insertIfAbsent(new UserAccount(userId, groupId));
-		if (userSession.isLogined()) {
-			log.debug("already logined as {}", userSession.getUserId());
+	public void register(UserAccount account) {
+		userAccountsTable.register(account);
+	}
 
-			if (!userSession.getUserId().equals(userId)) {
-				log.debug("userId is changed from {} to {}", userSession.getUserId(), userId);
-				userSession.setUserId(userId);
-			}
-			if (!userSession.getGroupId().equals(groupId)) {
-				log.debug("groupId is changed from {} to {}", userSession.getGroupId(), groupId);
-				userSession.setGroupId(groupId);
-			}
-			return true;
-		} else {
-			log.debug("create new session for {}", userId);
-			userSession.setMaxInactiveInterval(10 * 60 * 60);
-			userSession.setUserId(userId);
-			userSession.setGroupId(groupId);
-			return true;
+	@Override
+	public void update(UserAccount account) {
+		userAccountsTable.update(account);
+	}
+
+	@Override
+	public void merge(UserAccount account) {
+		userAccountsTable.merge(account);
+	}
+
+	@Override
+	public boolean login(String userId, String groupId, String password) {
+		UserSession userSession = getUserSession();
+		userAccountsTable.findByUserIdAndGroupId(userId, groupId);
+		if (!userAccountsTable.validate(userId, groupId, password)) {
+			return false;
 		}
+		userSession.setMaxInactiveInterval(10 * 60 * 60);
+		userSession.setUserId(userId);
+		userSession.setGroupId(groupId);
+		return true;
+	}
+
+	private UserSession getUserSession() {
+		return UserSession.of(getRequest());
 	}
 
 	public boolean isLogin(HttpServletRequest request) {
@@ -53,6 +60,12 @@ public class UserAccountService extends AbstractService implements UserAccountSe
 
 	protected HttpServletRequest getRequest() {
 		return ((ServletServiceContext) getServiceContext()).getRequest();
+	}
+
+	@Override
+	public boolean logout() {
+		getUserSession().logout();
+		return true;
 	}
 
 }
