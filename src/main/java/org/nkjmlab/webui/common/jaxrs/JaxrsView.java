@@ -6,6 +6,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
@@ -51,6 +52,13 @@ public class JaxrsView {
 		return getView(request.getPathInfo(), getParameterMap());
 	}
 
+	@POST
+	@Path("{path:.*}")
+	@Produces(MediaType.TEXT_HTML)
+	public Viewable postView() {
+		return getView(request.getPathInfo(), getParameterMap());
+	}
+
 	public Viewable getView(String pathInfo, Map<String, String[]> params) {
 		try {
 			return new Viewable(pathInfo);
@@ -68,16 +76,6 @@ public class JaxrsView {
 
 	public Viewable createView(String pathInfo, ThymeleafModel model) {
 		return new Viewable(getViewRootPath() + pathInfo, model);
-	}
-
-	public Viewable createView(String pathInfo) {
-		if (pathInfo.endsWith("/")) {
-			pathInfo += "index.html";
-		}
-		if (!pathInfo.startsWith("/")) {
-			pathInfo = "/" + pathInfo;
-		}
-		return new Viewable(getViewRootPath() + pathInfo);
 	}
 
 	private String getViewRootPath() {
@@ -99,6 +97,17 @@ public class JaxrsView {
 	protected String getServletUrl() {
 		return request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
 				+ request.getContextPath() + request.getServletPath();
+	}
+
+	public String getFullUrl() {
+		StringBuffer requestURL = request.getRequestURL();
+		String queryString = request.getQueryString();
+
+		if (queryString == null) {
+			return requestURL.toString();
+		} else {
+			return requestURL.append('?').append(queryString).toString();
+		}
 	}
 
 }

@@ -50,6 +50,8 @@ public class ThymeleafTemplateProcessor
 
 	private static String variableName = "model";
 
+	private static long cacheTTLMs = 0L;
+
 	@Inject
 	public ThymeleafTemplateProcessor(Configuration config, ServletContext servletContext) {
 		super(config, servletContext, "html", "html");
@@ -57,7 +59,7 @@ public class ThymeleafTemplateProcessor
 				servletContext);
 		templateResolver.setPrefix("/");
 		templateResolver.setTemplateMode("HTML5");
-		templateResolver.setCacheTTLMs(0L);
+		templateResolver.setCacheTTLMs(cacheTTLMs);
 
 		templateEngine = new TemplateEngine();
 		templateEngine.setTemplateResolver(templateResolver);
@@ -77,7 +79,9 @@ public class ThymeleafTemplateProcessor
 		Object model = viewable.getModel();
 
 		if (model instanceof ThymeleafModel) {
-			context.setVariables(((ThymeleafModel) model).getVariableMap());
+			ThymeleafModel tModel = (ThymeleafModel) model;
+			context.setVariables(tModel.getVariableMap());
+			context.setLocale(tModel.getLocale());
 		} else if (model instanceof Map) {
 			@SuppressWarnings("unchecked")
 			Map<String, Object> variables = (Map<String, Object>) model;
@@ -99,4 +103,7 @@ public class ThymeleafTemplateProcessor
 		variableName = variableName2;
 	}
 
+	public static void setcacheTTLMs(long cacheTTLMs2) {
+		cacheTTLMs = cacheTTLMs2;
+	}
 }

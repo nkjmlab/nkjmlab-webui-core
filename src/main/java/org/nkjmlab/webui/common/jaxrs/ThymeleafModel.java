@@ -1,6 +1,7 @@
 package org.nkjmlab.webui.common.jaxrs;
 
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -9,6 +10,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 public class ThymeleafModel {
 
 	private Map<String, Object> variableMap = new LinkedHashMap<>();
+	private Locale locale = Locale.US;
 
 	public ThymeleafModel() {
 	}
@@ -36,6 +38,10 @@ public class ThymeleafModel {
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+	}
+
+	public Locale getLocale() {
+		return locale;
 	}
 
 }
