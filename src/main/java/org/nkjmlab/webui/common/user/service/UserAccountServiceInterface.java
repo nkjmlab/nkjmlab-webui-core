@@ -13,10 +13,12 @@ public interface UserAccountServiceInterface {
 
 	boolean logout();
 
-	void register(UserAccount account);
+	boolean register(UserAccount account);
 
-	void merge(UserAccount account);
+	boolean merge(UserAccount account);
 
-	void update(UserAccount account);
+	boolean update(UserAccount account);
+
+	boolean updatePassword(String userId, String groupId, String password, String newPassword);
 
 }

@@ -1,5 +1,8 @@
 package org.nkjmlab.webui.common.user.service;
 
+import java.sql.Timestamp;
+import java.util.Date;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.logging.log4j.Logger;
@@ -23,20 +26,36 @@ public class UserAccountService extends AbstractService implements UserAccountSe
 	}
 
 	@Override
-	public void register(UserAccount account) {
+	public boolean register(UserAccount account) {
 		String inputPassword = account.getPassword();
+		account.setCreatedAt(new Timestamp(new Date().getTime()));
+		account.setModifiedAt(account.getCreatedAt());
 		userAccountsTable.register(account);
 		login(account.getUserId(), account.getGroupId(), inputPassword);
+		return true;
 	}
 
 	@Override
-	public void update(UserAccount account) {
+	public boolean update(UserAccount account) {
+		if (!getUserSession().isLogined()) {
+			return false;
+		}
+		if (getCurrentUserAccount().isSameUserAccount(account)) {
+
+		}
+		account.mergeWith(getCurrentUserAccount());
 		userAccountsTable.update(account);
+		return true;
+	}
+
+	private UserAccount getCurrentUserAccount() {
+		return userAccountsTable.findByUserSession(getUserSession());
 	}
 
 	@Override
-	public void merge(UserAccount account) {
+	public boolean merge(UserAccount account) {
 		userAccountsTable.merge(account);
+		return true;
 	}
 
 	@Override
@@ -71,6 +90,13 @@ public class UserAccountService extends AbstractService implements UserAccountSe
 	public boolean logout() {
 		getUserSession().logout();
 		return true;
+	}
+
+	@Override
+	public boolean updatePassword(String userId, String groupId, String password,
+			String newPassword) {
+		// TODO 自動生成されたメソッド・スタブ
+		return false;
 	}
 
 }
