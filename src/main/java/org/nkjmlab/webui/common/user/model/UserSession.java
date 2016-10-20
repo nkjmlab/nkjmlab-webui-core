@@ -12,8 +12,6 @@ public class UserSession {
 
 	private static final String USER_ID = "userId";
 
-	private static final String GROUP_ID = "groupId";
-
 	private HttpSession session;
 
 	private UserSession(HttpServletRequest request) {
@@ -38,12 +36,7 @@ public class UserSession {
 
 	public boolean logout() {
 		setUserId("");
-		setGroupId("");
 		return true;
-	}
-
-	public String getGroupId() {
-		return getAttribute(GROUP_ID) == null ? "" : getAttribute(GROUP_ID).toString();
 	}
 
 	public String getUserId() {
@@ -72,10 +65,6 @@ public class UserSession {
 
 	public void setUserId(String userId) {
 		session.setAttribute(USER_ID, userId);
-	}
-
-	public void setGroupId(String groupId) {
-		session.setAttribute(GROUP_ID, groupId);
 	}
 
 }

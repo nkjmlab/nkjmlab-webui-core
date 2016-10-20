@@ -90,10 +90,6 @@ public class JaxrsView {
 		return UserSession.of(request);
 	}
 
-	protected String getCurrentUserGroupId() {
-		return getCurrentUserSession().getGroupId();
-	}
-
 	protected String getServletUrl() {
 		return request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
 				+ request.getContextPath() + request.getServletPath();

@@ -8,7 +8,6 @@ public interface UserAccountServiceInterface {
 
 	boolean login(
 			@Parameter(sample = "nkjm") String userId,
-			@Parameter(sample = "nkjmlab") String groupId,
 			@Parameter(sample = "a94a8fe5ccb19ba61c4c0873d391e987982fbbd3") String password);
 
 	boolean logout();
@@ -19,6 +18,6 @@ public interface UserAccountServiceInterface {
 
 	boolean update(UserAccount account);
 
-	boolean updatePassword(String userId, String groupId, String password, String newPassword);
+	boolean updatePassword(String userId, String password, String newPassword);
 
 }

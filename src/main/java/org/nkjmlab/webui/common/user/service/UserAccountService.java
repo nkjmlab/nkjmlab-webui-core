@@ -31,7 +31,7 @@ public class UserAccountService extends AbstractService implements UserAccountSe
 		account.setCreatedAt(new Timestamp(new Date().getTime()));
 		account.setModifiedAt(account.getCreatedAt());
 		userAccountsTable.register(account);
-		login(account.getUserId(), account.getGroupId(), inputPassword);
+		login(account.getUserId(), inputPassword);
 		return true;
 	}
 
@@ -40,8 +40,8 @@ public class UserAccountService extends AbstractService implements UserAccountSe
 		if (!getUserSession().isLogined()) {
 			return false;
 		}
-		if (getCurrentUserAccount().isSameUserAccount(account)) {
-
+		if (!getCurrentUserAccount().isSameUserAccount(account)) {
+			return false;
 		}
 		account.mergeWith(getCurrentUserAccount());
 		userAccountsTable.update(account);
@@ -59,18 +59,17 @@ public class UserAccountService extends AbstractService implements UserAccountSe
 	}
 
 	@Override
-	public boolean login(String userId, String groupId, String password) {
+	public boolean login(String userId, String password) {
 		UserSession userSession = getUserSession();
-		UserAccount userAccount = userAccountsTable.findByUserIdAndGroupId(userId, groupId);
+		UserAccount userAccount = userAccountsTable.readByPrimaryKey(userId);
 		if (userAccount == null) {
-			throw new RuntimeException(userId + "(in " + groupId + ") is not registered:");
+			throw new RuntimeException(userId + " is not registered:");
 		}
-		if (!userAccountsTable.validate(userId, groupId, password)) {
+		if (!userAccountsTable.validate(userId, password)) {
 			throw new RuntimeException("Password is not correct:");
 		}
 		userSession.setMaxInactiveInterval(10 * 60 * 60);
 		userSession.setUserId(userId);
-		userSession.setGroupId(groupId);
 		return true;
 	}
 
@@ -93,8 +92,7 @@ public class UserAccountService extends AbstractService implements UserAccountSe
 	}
 
 	@Override
-	public boolean updatePassword(String userId, String groupId, String password,
-			String newPassword) {
+	public boolean updatePassword(String userId, String password, String newPassword) {
 		// TODO 自動生成されたメソッド・スタブ
 		return false;
 	}

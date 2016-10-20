@@ -13,7 +13,6 @@ import net.sf.persist.annotations.Table;
 @Table(name = "USER_ACCOUNTS")
 public class UserAccount implements RelatedWithTable {
 
-	/** e-mail address, as a general rule. **/
 	private Date createdAt;
 	private Date modifiedAt;
 	private String userId;
@@ -23,9 +22,9 @@ public class UserAccount implements RelatedWithTable {
 	private String lastName;
 	private String password;
 	private String role;
-	private String options;
-	private String mailAddress;
+	private String mail;
 	private String language;
+	private String options;
 
 	public enum Role {
 		ADMIN(9), DEVELOPER(7), OPERATOR(5), RESTRICTED_OPERATOR(4), USER(3);
@@ -115,12 +114,12 @@ public class UserAccount implements RelatedWithTable {
 		this.options = options;
 	}
 
-	public String getMailAddress() {
-		return mailAddress;
+	public String getMail() {
+		return mail;
 	}
 
-	public void setMailAddress(String mailAddress) {
-		this.mailAddress = mailAddress;
+	public void setMail(String mailAddress) {
+		this.mail = mailAddress;
 	}
 
 	public boolean validate(String password) {
@@ -173,7 +172,7 @@ public class UserAccount implements RelatedWithTable {
 	}
 
 	public boolean isSameUserAccount(UserAccount account) {
-		if (userId.equals(account.userId) && groupId.equals(account.groupId)) {
+		if (userId.equals(account.getUserId())) {
 			return true;
 		}
 		return false;
