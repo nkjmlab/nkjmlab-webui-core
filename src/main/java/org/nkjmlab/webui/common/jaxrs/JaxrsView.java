@@ -17,6 +17,7 @@ import javax.ws.rs.core.MediaType;
 import org.apache.logging.log4j.Logger;
 import org.glassfish.jersey.server.mvc.Viewable;
 import org.nkjmlab.util.log4j.LogManager;
+import org.nkjmlab.util.net.ServletUrlUtils;
 import org.nkjmlab.webui.common.user.model.UserSession;
 
 /**
@@ -99,19 +100,11 @@ public class JaxrsView {
 	}
 
 	protected String getServletUrl() {
-		return request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
-				+ request.getContextPath() + request.getServletPath();
+		return ServletUrlUtils.getServletUrl(request);
 	}
 
-	public String getFullUrl() {
-		StringBuffer requestURL = request.getRequestURL();
-		String queryString = request.getQueryString();
-
-		if (queryString == null) {
-			return requestURL.toString();
-		} else {
-			return requestURL.append('?').append(queryString).toString();
-		}
+	public String getFullRequestUrl() {
+		return ServletUrlUtils.getFullRequestUrl(request);
 	}
 
 	protected Viewable redirectTo(String pathInfo) {
