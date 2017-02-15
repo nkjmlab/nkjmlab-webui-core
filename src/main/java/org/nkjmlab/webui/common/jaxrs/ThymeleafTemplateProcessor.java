@@ -92,6 +92,10 @@ public class ThymeleafTemplateProcessor
 		try (Writer writer = new OutputStreamWriter(out)) {
 			templateEngine.process(templateReference, context, writer);
 			writer.flush();
+		} catch (Throwable t) {
+			log.error("templateReference={}", mediaType);
+			log.error("model={}", viewable.getModel());
+			log.error(t, t);
 		}
 	}
 

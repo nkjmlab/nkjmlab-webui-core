@@ -1,5 +1,6 @@
 package org.nkjmlab.webui.common.jaxrs;
 
+import java.io.IOException;
 import java.util.Map;
 
 import javax.servlet.ServletContext;
@@ -90,6 +91,13 @@ public class JaxrsView {
 		return UserSession.of(request);
 	}
 
+	protected boolean isRootPath(String pathInfo) {
+		if (pathInfo == null || pathInfo.equals("") || pathInfo.equals("/")) {
+			return true;
+		}
+		return false;
+	}
+
 	protected String getServletUrl() {
 		return request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
 				+ request.getContextPath() + request.getServletPath();
@@ -106,4 +114,25 @@ public class JaxrsView {
 		}
 	}
 
+	protected Viewable redirectTo(String pathInfo) {
+		try {
+			response.sendRedirect(getServletUrl() + pathInfo);
+		} catch (IOException e) {
+			throw new IllegalArgumentException(e);
+		}
+		return createView("/index.html", new ThymeleafModel());
+	}
+
+	protected boolean containsNoAuthPathElements(String[] noAuthPaths, String pathInfo) {
+		for (String noAuthPath : noAuthPaths) {
+			if (pathInfo.contains(noAuthPath)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	protected boolean isLoginedSession() {
+		return UserSession.of(request).isLogined();
+	}
 }

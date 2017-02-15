@@ -15,11 +15,6 @@
 			<id>nkjmlab-public</id>
 			<url>http://maven.nkjmlab.org/nexus/content/groups/public</url>
 		</repository>
-		<repository>
-			<id>nkjmlab-public-mirror</id>
-			<name>nkjmlab Public Repository Mirror</name>
-			<url>http://mirror.maven.nkjmlab.org/nexus/content/groups/public</url>
-		</repository>
 	</repositories>
 
 	<scm>

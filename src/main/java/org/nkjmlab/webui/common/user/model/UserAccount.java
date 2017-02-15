@@ -16,7 +16,7 @@ public class UserAccount implements RelatedWithTable {
 	private Date createdAt;
 	private Date modifiedAt;
 	private String userId;
-	private String groupId;
+	private String groupName;
 	private String nickname;
 	private String firstName;
 	private String lastName;
@@ -46,7 +46,7 @@ public class UserAccount implements RelatedWithTable {
 	public UserAccount(String userId, String groupId, String password, String langage,
 			String nickname, Role role) {
 		this.userId = userId;
-		this.groupId = groupId;
+		this.groupName = groupId;
 		this.password = password;
 		this.language = langage;
 		this.nickname = nickname;
@@ -69,12 +69,12 @@ public class UserAccount implements RelatedWithTable {
 		this.userId = userId;
 	}
 
-	public String getGroupId() {
-		return groupId;
+	public String getGroupName() {
+		return groupName;
 	}
 
-	public void setGroupId(String groupId) {
-		this.groupId = groupId;
+	public void setGroupName(String groupId) {
+		this.groupName = groupId;
 	}
 
 	@Override

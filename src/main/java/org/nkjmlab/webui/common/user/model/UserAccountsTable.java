@@ -9,7 +9,7 @@ public class UserAccountsTable extends RelationalModel<UserAccount> {
 	public static final String CREATED_AT = "created_at";
 	public static final String MODIFIED_AT = "modified_at";
 	public static final String USER_ID = "user_id";
-	public static final String GROUP_ID = "group_id";
+	public static final String GROUP_NAME = "group_name";
 	public static final String PASSWORD = "password";
 	public static final String NICKNAME = "nickname";
 	public static final String ROLE = "role";
@@ -21,8 +21,8 @@ public class UserAccountsTable extends RelationalModel<UserAccount> {
 
 	public UserAccountsTable(DbClient client) {
 		super(new UserAccount().getTableName(), client);
-		addColumnDefinition(USER_ID, Keyword.VARCHAR);
-		addColumnDefinition(GROUP_ID, Keyword.VARCHAR);
+		addColumnDefinition(USER_ID, Keyword.VARCHAR, Keyword.PRIMARY_KEY);
+		addColumnDefinition(GROUP_NAME, Keyword.VARCHAR);
 		addColumnDefinition(NICKNAME, Keyword.VARCHAR);
 		addColumnDefinition(FIRST_NAME, Keyword.VARCHAR);
 		addColumnDefinition(LAST_NAME, Keyword.VARCHAR);
@@ -33,7 +33,6 @@ public class UserAccountsTable extends RelationalModel<UserAccount> {
 		addColumnDefinition(MAIL, Keyword.VARCHAR);
 		addColumnDefinition(LANGUAGE, Keyword.VARCHAR);
 		addColumnDefinition(OPTIONS, Keyword.VARCHAR);
-		setPrimaryKeyConstraint(USER_ID, GROUP_ID);
 	}
 
 	public boolean validate(String userId, String password) {
@@ -42,7 +41,7 @@ public class UserAccountsTable extends RelationalModel<UserAccount> {
 	}
 
 	public UserAccount findByUserIdAndGroupId(String userId, String groupId) {
-		return readBy(USER_ID, userId, GROUP_ID, groupId);
+		return readBy(USER_ID, userId, GROUP_NAME, groupId);
 	}
 
 	public void register(UserAccount userAccount) {
