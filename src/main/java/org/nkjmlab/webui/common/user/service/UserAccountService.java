@@ -97,4 +97,11 @@ public class UserAccountService extends AbstractService implements UserAccountSe
 		return false;
 	}
 
+	@Override
+	public boolean exists(String userId) {
+		UserAccount ua = new UserAccount();
+		ua.setUserId(userId);
+		return userAccountsTable.exists(ua);
+	}
+
 }

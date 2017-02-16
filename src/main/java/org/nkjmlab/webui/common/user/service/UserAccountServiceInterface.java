@@ -20,4 +20,6 @@ public interface UserAccountServiceInterface {
 
 	boolean updatePassword(String userId, String password, String newPassword);
 
+	boolean exists(String userId);
+
 }
