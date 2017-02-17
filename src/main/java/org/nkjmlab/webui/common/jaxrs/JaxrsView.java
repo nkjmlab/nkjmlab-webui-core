@@ -99,6 +99,10 @@ public class JaxrsView {
 		return false;
 	}
 
+	protected String getHostUrl() {
+		return ServletUrlUtils.getHostUrl(request);
+	}
+
 	protected String getServletUrl() {
 		return ServletUrlUtils.getServletUrl(request);
 	}
