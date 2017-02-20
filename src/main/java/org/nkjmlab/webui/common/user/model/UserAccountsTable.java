@@ -6,6 +6,8 @@ import org.nkjmlab.util.db.RelationalModel;
 
 public class UserAccountsTable extends RelationalModel<UserAccount> {
 
+	public static final String TABLE_NAME = "USER_ACCOUNTS";
+
 	public static final String CREATED_AT = "created_at";
 	public static final String MODIFIED_AT = "modified_at";
 	public static final String USER_ID = "user_id";
@@ -26,9 +28,9 @@ public class UserAccountsTable extends RelationalModel<UserAccount> {
 		addColumnDefinition(NICKNAME, Keyword.VARCHAR);
 		addColumnDefinition(FIRST_NAME, Keyword.VARCHAR);
 		addColumnDefinition(LAST_NAME, Keyword.VARCHAR);
-		addColumnDefinition(CREATED_AT, Keyword.TIMESTAMP);
-		addColumnDefinition(MODIFIED_AT, Keyword.TIMESTAMP);
-		addColumnDefinition(PASSWORD, Keyword.VARCHAR);
+		addColumnDefinition(CREATED_AT, Keyword.TIMESTAMP_AS_CURRENT_TIMESTAMP);
+		addColumnDefinition(MODIFIED_AT, Keyword.TIMESTAMP_AS_CURRENT_TIMESTAMP);
+		addColumnDefinition(PASSWORD, Keyword.VARCHAR, Keyword.NOT_NULL);
 		addColumnDefinition(ROLE, Keyword.VARCHAR);
 		addColumnDefinition(MAIL, Keyword.VARCHAR);
 		addColumnDefinition(LANGUAGE, Keyword.VARCHAR);
@@ -45,8 +47,6 @@ public class UserAccountsTable extends RelationalModel<UserAccount> {
 	}
 
 	public void register(UserAccount userAccount) {
-		String sha256HashedButWithoutSaltPassword = userAccount.getPassword();
-		userAccount.setPasswordWithoutSalt(sha256HashedButWithoutSaltPassword);
 		if (exists(userAccount)) {
 			throw new RuntimeException(userAccount.getUserId() + " is already registered:");
 		}

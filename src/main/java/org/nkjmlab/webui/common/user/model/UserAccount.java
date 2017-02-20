@@ -8,10 +8,13 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import org.nkjmlab.util.bean.BeanUtils;
 import org.nkjmlab.util.db.RelatedWithTable;
 
+import net.sf.persist.annotations.NoColumn;
 import net.sf.persist.annotations.Table;
 
-@Table(name = "USER_ACCOUNTS")
+@Table(name = UserAccountsTable.TABLE_NAME)
 public class UserAccount implements RelatedWithTable {
+
+	private static final String SALT = "801iljmlkgfa796y19holj1ljl";
 
 	private Date createdAt;
 	private Date modifiedAt;
@@ -25,6 +28,19 @@ public class UserAccount implements RelatedWithTable {
 	private String mail;
 	private String language;
 	private String options;
+
+	private String encryptedInputPassword;
+
+	@NoColumn
+	public String getEncryptedInputPassword() {
+		return encryptedInputPassword;
+	}
+
+	@NoColumn
+	public void setEncryptedInputPassword(String encryptedInputPassword) {
+		this.encryptedInputPassword = encryptedInputPassword;
+		this.password = DigestUtils.sha256Hex(encryptedInputPassword + getSalt());
+	}
 
 	public enum Role {
 		ADMIN(9), DEVELOPER(7), OPERATOR(5), RESTRICTED_OPERATOR(4), USER(3);
@@ -43,14 +59,14 @@ public class UserAccount implements RelatedWithTable {
 	public UserAccount() {
 	}
 
-	public UserAccount(String userId, String groupId, String password, String langage,
-			String nickname, Role role) {
+	public UserAccount(String userId, String groupName, String encrypedInputPassword,
+			String langage, String nickname, Role role) {
 		this.userId = userId;
-		this.groupName = groupId;
-		this.password = password;
-		this.language = langage;
-		this.nickname = nickname;
-		this.role = role.name();
+		setGroupName(groupName);
+		setLanguage(langage);
+		setNickname(nickname);
+		setEncryptedInputPassword(encrypedInputPassword);
+		this.role = role == null ? Role.USER.name() : role.name();
 	}
 
 	public Date getCreatedAt() {
@@ -73,8 +89,8 @@ public class UserAccount implements RelatedWithTable {
 		return groupName;
 	}
 
-	public void setGroupName(String groupId) {
-		this.groupName = groupId;
+	public void setGroupName(String groupName) {
+		this.groupName = groupName;
 	}
 
 	@Override
@@ -123,12 +139,11 @@ public class UserAccount implements RelatedWithTable {
 	}
 
 	public boolean validate(String password) {
-		return this.password
-				.equals(DigestUtils.sha256Hex(password + getSalt()));
+		return this.password.equals(DigestUtils.sha256Hex(password + getSalt()));
 	}
 
 	private String getSalt() {
-		return String.valueOf(createdAt.getTime());
+		return SALT;
 	}
 
 	public String getLanguage() {
@@ -145,10 +160,6 @@ public class UserAccount implements RelatedWithTable {
 
 	public void setModifiedAt(Date modified) {
 		this.modifiedAt = modified;
-	}
-
-	public void setPasswordWithoutSalt(String sha256HashedButWithoutSaltPassword) {
-		this.password = DigestUtils.sha256Hex(sha256HashedButWithoutSaltPassword + getSalt());
 	}
 
 	public String getFirstName() {
@@ -178,8 +189,8 @@ public class UserAccount implements RelatedWithTable {
 		return false;
 	}
 
-	public void mergeWith(UserAccount src) {
-		BeanUtils.mergeWith(this, src);
+	public void setIfAbsent(UserAccount src) {
+		BeanUtils.setIfAbsent(this, src);
 	}
 
 }

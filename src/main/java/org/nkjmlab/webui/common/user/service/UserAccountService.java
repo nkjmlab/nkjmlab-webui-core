@@ -1,11 +1,13 @@
 package org.nkjmlab.webui.common.user.service;
 
+import java.io.File;
 import java.sql.Timestamp;
 import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.logging.log4j.Logger;
+import org.nkjmlab.util.base64.Base64FileUtils;
 import org.nkjmlab.util.db.DbClient;
 import org.nkjmlab.util.log4j.LogManager;
 import org.nkjmlab.webui.common.user.model.UserAccount;
@@ -26,13 +28,18 @@ public class UserAccountService extends AbstractService implements UserAccountSe
 	}
 
 	@Override
+	public boolean signup(UserAccount account) {
+		register(account);
+		login(account.getUserId(), account.getEncryptedInputPassword());
+		return true;
+	}
+
+	@Override
 	public boolean register(UserAccount account) {
-		String inputPassword = account.getPassword();
 		account.setCreatedAt(new Timestamp(new Date().getTime()));
 		account.setModifiedAt(account.getCreatedAt());
 		userAccountsTable.register(account);
-		login(account.getUserId(), inputPassword);
-		return true;
+		return false;
 	}
 
 	@Override
@@ -43,8 +50,16 @@ public class UserAccountService extends AbstractService implements UserAccountSe
 		if (!getCurrentUserAccount().isSameUserAccount(account)) {
 			return false;
 		}
-		account.mergeWith(getCurrentUserAccount());
+		account.setIfAbsent(getCurrentUserAccount());
 		userAccountsTable.update(account);
+		return true;
+	}
+
+	@Override
+	public boolean delete(String userId) {
+		UserAccount u = new UserAccount();
+		u.setUserId(userId);
+		userAccountsTable.delete(u);
 		return true;
 	}
 
@@ -73,7 +88,7 @@ public class UserAccountService extends AbstractService implements UserAccountSe
 		return true;
 	}
 
-	private UserSession getUserSession() {
+	public UserSession getUserSession() {
 		return UserSession.of(getRequest());
 	}
 
@@ -92,8 +107,22 @@ public class UserAccountService extends AbstractService implements UserAccountSe
 	}
 
 	@Override
-	public boolean updatePassword(String userId, String password, String newPassword) {
-		// TODO 自動生成されたメソッド・スタブ
+	public boolean updatePasswordByAdmin(String userId, String newPassword) {
+		if (getCurrentUserAccount().isAdmin()) {
+			UserAccount ua = userAccountsTable.readByPrimaryKey(userId);
+			ua.setEncryptedInputPassword(newPassword);
+			userAccountsTable.update(ua);
+		}
+		return false;
+	}
+
+	@Override
+	public boolean updatePassword(String userId, String oldPassword, String newPassword) {
+		if (userAccountsTable.validate(userId, oldPassword)) {
+			UserAccount ua = userAccountsTable.readByPrimaryKey(userId);
+			ua.setEncryptedInputPassword(newPassword);
+			userAccountsTable.update(ua);
+		}
 		return false;
 	}
 
@@ -102,6 +131,15 @@ public class UserAccountService extends AbstractService implements UserAccountSe
 		UserAccount ua = new UserAccount();
 		ua.setUserId(userId);
 		return userAccountsTable.exists(ua);
+	}
+
+	@Override
+	public boolean uploadUsersCsv(String base64EncodedFile) {
+		log.debug(base64EncodedFile);
+		File outputFile = Base64FileUtils.decodeAndWriteToFileInTempDir(
+				"users-" + System.currentTimeMillis() + ".csv", base64EncodedFile);
+		log.info("Output file is {}.", outputFile);
+		return true;
 	}
 
 }
