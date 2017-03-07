@@ -1,4 +1,4 @@
-package org.nkjmlab.webui.common.jaxrs;
+package org.nkjmlab.webui.jaxrs.thymeleaf;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -58,7 +58,8 @@ public class ThymeleafTemplateProcessor
 		ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver(
 				servletContext);
 		templateResolver.setPrefix("/");
-		templateResolver.setTemplateMode("HTML5");
+		templateResolver.setTemplateMode("HTML");
+		templateResolver.setCacheable(false);
 		templateResolver.setCacheTTLMs(cacheTTLMs);
 
 		templateEngine = new TemplateEngine();

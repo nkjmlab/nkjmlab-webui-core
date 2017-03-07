@@ -1,8 +1,9 @@
-package org.nkjmlab.webui.common.user.model;
+package org.nkjmlab.webui.service.user.model;
 
 import org.nkjmlab.util.db.DbClient;
 import org.nkjmlab.util.db.Keyword;
 import org.nkjmlab.util.db.RelationalModel;
+import org.nkjmlab.webui.util.servlet.UserSession;
 
 public class UserAccountsTable extends RelationalModel<UserAccount> {
 

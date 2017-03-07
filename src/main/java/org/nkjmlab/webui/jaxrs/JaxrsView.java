@@ -1,5 +1,6 @@
-package org.nkjmlab.webui.common.jaxrs;
+package org.nkjmlab.webui.jaxrs;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
@@ -17,8 +18,10 @@ import javax.ws.rs.core.MediaType;
 import org.apache.logging.log4j.Logger;
 import org.glassfish.jersey.server.mvc.Viewable;
 import org.nkjmlab.util.log4j.LogManager;
-import org.nkjmlab.util.net.ServletUrlUtils;
-import org.nkjmlab.webui.common.user.model.UserSession;
+import org.nkjmlab.webui.jaxrs.thymeleaf.ThymeleafModel;
+import org.nkjmlab.webui.service.user.model.UserAccount;
+import org.nkjmlab.webui.util.servlet.ServletUrlUtils;
+import org.nkjmlab.webui.util.servlet.UserSession;
 
 /**
  * @author nkjm
@@ -44,7 +47,7 @@ public class JaxrsView {
 	private String viewRootPath;
 
 	public JaxrsView() {
-		this.viewRootPath = "/jaxrs-view-root";
+		this.viewRootPath = File.separator + "jaxrs-view-root";
 	}
 
 	@GET
@@ -71,7 +74,6 @@ public class JaxrsView {
 	}
 
 	protected Map<String, String[]> getParameterMap() {
-		@SuppressWarnings("unchecked")
 		Map<String, String[]> parameterMap = (Map<String, String[]>) request.getParameterMap();
 		return parameterMap;
 	}
@@ -132,4 +134,12 @@ public class JaxrsView {
 	protected boolean isLoginedSession() {
 		return UserSession.of(request).isLogined();
 	}
+
+	protected ThymeleafModel createThymeLeafModelWithUserAccount(UserAccount ua) {
+		ThymeleafModel model = new ThymeleafModel();
+		model.put("currentUser", ua);
+		model.setLocale(ua.getLocale());
+		return model;
+	}
+
 }

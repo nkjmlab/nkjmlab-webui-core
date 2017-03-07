@@ -1,4 +1,4 @@
-package org.nkjmlab.webui.common.user.service;
+package org.nkjmlab.webui.service.user.service;
 
 import java.io.File;
 import java.sql.Timestamp;
@@ -10,9 +10,9 @@ import org.apache.logging.log4j.Logger;
 import org.nkjmlab.util.base64.Base64FileUtils;
 import org.nkjmlab.util.db.DbClient;
 import org.nkjmlab.util.log4j.LogManager;
-import org.nkjmlab.webui.common.user.model.UserAccount;
-import org.nkjmlab.webui.common.user.model.UserAccountsTable;
-import org.nkjmlab.webui.common.user.model.UserSession;
+import org.nkjmlab.webui.service.user.model.UserAccount;
+import org.nkjmlab.webui.service.user.model.UserAccountsTable;
+import org.nkjmlab.webui.util.servlet.UserSession;
 
 import jp.go.nict.langrid.commons.ws.ServletServiceContext;
 import jp.go.nict.langrid.servicecontainer.service.AbstractService;
@@ -22,6 +22,9 @@ public class UserAccountService extends AbstractService implements UserAccountSe
 	protected static Logger log = LogManager.getLogger();
 
 	private UserAccountsTable userAccountsTable;
+
+	public UserAccountService() {
+	}
 
 	public UserAccountService(DbClient client) {
 		userAccountsTable = new UserAccountsTable(client);

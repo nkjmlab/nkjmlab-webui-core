@@ -1,4 +1,4 @@
-package org.nkjmlab.webui.common.user.model;
+package org.nkjmlab.webui.util.servlet;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;

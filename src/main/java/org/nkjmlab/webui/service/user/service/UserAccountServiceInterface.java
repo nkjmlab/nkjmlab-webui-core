@@ -1,6 +1,6 @@
-package org.nkjmlab.webui.common.user.service;
+package org.nkjmlab.webui.service.user.service;
 
-import org.nkjmlab.webui.common.user.model.UserAccount;
+import org.nkjmlab.webui.service.user.model.UserAccount;
 
 import jp.go.nict.langrid.commons.rpc.intf.Parameter;
 

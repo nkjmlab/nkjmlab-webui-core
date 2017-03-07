@@ -1,4 +1,4 @@
-package org.nkjmlab.webui.common.jaxrs;
+package org.nkjmlab.webui.jaxrs.thymeleaf;
 
 import java.util.LinkedHashMap;
 import java.util.Locale;
@@ -44,4 +44,7 @@ public class ThymeleafModel {
 		return locale;
 	}
 
+	public void setLocale(Locale locale) {
+		this.locale = locale;
+	}
 }

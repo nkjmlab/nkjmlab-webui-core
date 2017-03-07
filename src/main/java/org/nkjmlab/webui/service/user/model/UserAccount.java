@@ -1,6 +1,7 @@
-package org.nkjmlab.webui.common.user.model;
+package org.nkjmlab.webui.service.user.model;
 
 import java.util.Date;
+import java.util.Locale;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -191,6 +192,15 @@ public class UserAccount implements RelatedWithTable {
 
 	public void setIfAbsent(UserAccount src) {
 		BeanUtils.setIfAbsent(this, src);
+	}
+
+	@NoColumn
+	public Locale getLocale() {
+		try {
+			return Locale.forLanguageTag(language);
+		} catch (Throwable t) {
+			return Locale.US;
+		}
 	}
 
 }
