@@ -3,6 +3,7 @@ package org.nkjmlab.webui.jaxrs.thymeleaf;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -11,6 +12,7 @@ public class ThymeleafModel {
 
 	private Map<String, Object> variableMap = new LinkedHashMap<>();
 	private Locale locale = Locale.US;
+	private Consumer<Throwable> handler;
 
 	public ThymeleafModel() {
 	}
@@ -47,4 +49,16 @@ public class ThymeleafModel {
 	public void setLocale(Locale locale) {
 		this.locale = locale;
 	}
+
+	public void callback(Throwable t) {
+		if (handler == null) {
+			return;
+		}
+		handler.accept(t);
+	}
+
+	public void setErrorHandler(Consumer<Throwable> handler) {
+		this.handler = handler;
+	}
+
 }

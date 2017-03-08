@@ -1,6 +1,5 @@
 package org.nkjmlab.webui.jaxrs;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
@@ -47,7 +46,7 @@ public class JaxrsView {
 	private String viewRootPath;
 
 	public JaxrsView() {
-		this.viewRootPath = File.separator + "jaxrs-view-root";
+		this.viewRootPath = "/jaxrs-view-root";
 	}
 
 	@GET
@@ -114,12 +113,16 @@ public class JaxrsView {
 	}
 
 	protected Viewable redirectTo(String pathInfo) {
+		return redirectTo(pathInfo, new ThymeleafModel());
+	}
+
+	protected Viewable redirectTo(String pathInfo, ThymeleafModel model) {
 		try {
 			response.sendRedirect(getServletUrl() + pathInfo);
 		} catch (IOException e) {
 			throw new IllegalArgumentException(e);
 		}
-		return createView("/index.html", new ThymeleafModel());
+		return createView("/index.html", model);
 	}
 
 	protected boolean containsNoAuthPathElements(String[] noAuthPaths, String pathInfo) {

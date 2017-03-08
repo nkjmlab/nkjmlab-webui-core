@@ -96,7 +96,9 @@ public class ThymeleafTemplateProcessor
 		} catch (Throwable t) {
 			log.error("templateReference={}", mediaType);
 			log.error("model={}", viewable.getModel());
-			log.error(t, t);
+			if (model instanceof ThymeleafModel) {
+				((ThymeleafModel) model).callback(t);
+			}
 		}
 	}
 
