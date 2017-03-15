@@ -25,4 +25,5 @@ public class ServletUrlUtils {
 	public static String getHostUrl(HttpServletRequest request) {
 		return UrlUtils.getHostUrl(getServletUrl(request));
 	}
+
 }

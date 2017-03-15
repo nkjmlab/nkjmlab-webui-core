@@ -20,13 +20,14 @@ import org.nkjmlab.util.log4j.LogManager;
 import org.nkjmlab.webui.jaxrs.thymeleaf.ThymeleafModel;
 import org.nkjmlab.webui.service.user.model.UserAccount;
 import org.nkjmlab.webui.util.servlet.ServletUrlUtils;
+import org.nkjmlab.webui.util.servlet.UserRequest;
 import org.nkjmlab.webui.util.servlet.UserSession;
 
 /**
  * @author nkjm
  *
  */
-public class JaxrsView {
+public abstract class JaxrsView {
 
 	protected static Logger log = LogManager.getLogger();
 
@@ -49,6 +50,8 @@ public class JaxrsView {
 		this.viewRootPath = "/jaxrs-view-root";
 	}
 
+	public abstract Viewable getView(String pathInfo, Map<String, String[]> params);
+
 	@GET
 	@Path("{path:.*}")
 	@Produces(MediaType.TEXT_HTML)
@@ -63,15 +66,6 @@ public class JaxrsView {
 		return getView(request.getPathInfo(), getParameterMap());
 	}
 
-	public Viewable getView(String pathInfo, Map<String, String[]> params) {
-		try {
-			return new Viewable(pathInfo);
-		} catch (Exception e) {
-			log.error(e, e);
-			throw new RuntimeException(e);
-		}
-	}
-
 	protected Map<String, String[]> getParameterMap() {
 		Map<String, String[]> parameterMap = (Map<String, String[]>) request.getParameterMap();
 		return parameterMap;
@@ -79,6 +73,14 @@ public class JaxrsView {
 
 	public Viewable createView(String pathInfo, ThymeleafModel model) {
 		return new Viewable(getViewRootPath() + pathInfo, model);
+	}
+
+	protected Viewable getDefaultView(String pathInfo, Map<String, String[]> parameterMap) {
+		ThymeleafModel model = new ThymeleafModel(parameterMap);
+		if (pathInfo.equals("/")) {
+			pathInfo = "/index.html";
+		}
+		return createView(pathInfo, model);
 	}
 
 	private String getViewRootPath() {
@@ -138,8 +140,19 @@ public class JaxrsView {
 		return UserSession.of(request).isLogined();
 	}
 
-	protected ThymeleafModel createThymeLeafModelWithUserAccount(UserAccount ua) {
+	protected UserSession getUserSession() {
+		return UserSession.of(request);
+	}
+
+	protected UserRequest getUserRequest() {
+		return UserRequest.of(request);
+	}
+
+	protected ThymeleafModel createModelWithUserAccountIfExists(UserAccount ua) {
 		ThymeleafModel model = new ThymeleafModel();
+		if (ua == null) {
+			return model;
+		}
 		model.put("currentUser", ua);
 		model.setLocale(ua.getLocale());
 		return model;

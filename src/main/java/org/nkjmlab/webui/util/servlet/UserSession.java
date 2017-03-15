@@ -39,7 +39,7 @@ public class UserSession {
 		return true;
 	}
 
-	public String getUserId() {
+	public synchronized String getUserId() {
 		return getAttribute(USER_ID) == null ? "" : getAttribute(USER_ID).toString();
 	}
 
@@ -63,8 +63,9 @@ public class UserSession {
 		session.setMaxInactiveInterval(maxInterval);
 	}
 
-	public void setUserId(String userId) {
+	public synchronized void setUserId(String userId) {
 		session.setAttribute(USER_ID, userId);
+		log.debug(session.getId());
 	}
 
 }

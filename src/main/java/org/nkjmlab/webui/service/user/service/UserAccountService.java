@@ -4,22 +4,14 @@ import java.io.File;
 import java.sql.Timestamp;
 import java.util.Date;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.logging.log4j.Logger;
 import org.nkjmlab.util.base64.Base64FileUtils;
 import org.nkjmlab.util.db.DbClient;
-import org.nkjmlab.util.log4j.LogManager;
+import org.nkjmlab.webui.jsonrpc.JsonRpcService;
 import org.nkjmlab.webui.service.user.model.UserAccount;
 import org.nkjmlab.webui.service.user.model.UserAccountsTable;
 import org.nkjmlab.webui.util.servlet.UserSession;
 
-import jp.go.nict.langrid.commons.ws.ServletServiceContext;
-import jp.go.nict.langrid.servicecontainer.service.AbstractService;
-
-public class UserAccountService extends AbstractService implements UserAccountServiceInterface {
-
-	protected static Logger log = LogManager.getLogger();
+public class UserAccountService extends JsonRpcService implements UserAccountServiceInterface {
 
 	private UserAccountsTable userAccountsTable;
 
@@ -81,26 +73,15 @@ public class UserAccountService extends AbstractService implements UserAccountSe
 		UserSession userSession = getUserSession();
 		UserAccount userAccount = userAccountsTable.readByPrimaryKey(userId);
 		if (userAccount == null) {
-			throw new RuntimeException(userId + " is not registered:");
+			throw new RuntimeException(userId + " is not registered.");
 		}
 		if (!userAccountsTable.validate(userId, password)) {
-			throw new RuntimeException("Password is not correct:");
+			throw new RuntimeException("Password is not correct.");
 		}
 		userSession.setMaxInactiveInterval(10 * 60 * 60);
 		userSession.setUserId(userId);
+		log.info("{} is logined. login session id={}", userSession.getId());
 		return true;
-	}
-
-	public UserSession getUserSession() {
-		return UserSession.of(getRequest());
-	}
-
-	public boolean isLogin(HttpServletRequest request) {
-		return UserSession.of(request).isLogined();
-	}
-
-	protected HttpServletRequest getRequest() {
-		return ((ServletServiceContext) getServiceContext()).getRequest();
 	}
 
 	@Override

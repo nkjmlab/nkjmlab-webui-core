@@ -22,4 +22,8 @@ public class UserRequest {
 		return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).build();
 	}
 
+	public String getReferer() {
+		return request.getHeader("REFERER");
+	}
+
 }

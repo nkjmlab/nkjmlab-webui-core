@@ -9,11 +9,12 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.soap.MimeHeaders;
+
+import org.apache.logging.log4j.Logger;
+import org.nkjmlab.util.log4j.LogManager;
 
 import jp.go.nict.langrid.commons.beanutils.Converter;
 import jp.go.nict.langrid.commons.beanutils.ConverterForJsonRpc;
@@ -29,14 +30,14 @@ import jp.go.nict.langrid.servicecontainer.handler.RIProcessor;
 import jp.go.nict.langrid.servicecontainer.handler.ServiceFactory;
 import jp.go.nict.langrid.servicecontainer.handler.ServiceLoader;
 import jp.go.nict.langrid.servicecontainer.handler.jsonrpc.AbstractJsonRpcHandler;
-import jp.go.nict.langrid.servicecontainer.handler.jsonrpc.JsonRpcDynamicHandler;
 import jp.go.nict.langrid.servicecontainer.handler.jsonrpc.JsonRpcHandler;
 
 public abstract class JsonRpcDynamicHandlerWithErrorHandler extends AbstractJsonRpcHandler
 		implements JsonRpcHandler {
 
+	protected static Logger log = LogManager.getLogger();
+
 	private Converter converter = new ConverterForJsonRpc();
-	private static Logger logger = Logger.getLogger(JsonRpcDynamicHandler.class.getName());
 
 	protected abstract void handleError(ServiceContext sc, ServiceLoader sl, String serviceName,
 			JsonRpcRequest req, HttpServletResponse response, OutputStream os, JsonRpcResponse res,
@@ -79,7 +80,7 @@ public abstract class JsonRpcDynamicHandlerWithErrorHandler extends AbstractJson
 						break;
 					}
 					if (method == null) {
-						logger.warning(String.format(
+						log.warn(String.format(
 								"method \"%s(%s)\" not found in service \"%s\".", req.getMethod(),
 								StringUtil.repeatedString("arg", paramLength, ","), serviceName));
 						response.setStatus(404);
@@ -138,13 +139,14 @@ public abstract class JsonRpcDynamicHandlerWithErrorHandler extends AbstractJson
 				}
 			} catch (InvocationTargetException e) {
 				Throwable t = e.getTargetException();
-				logger.log(Level.SEVERE, "failed to handle request for " + serviceName
+				log.error("failed to handle request for " + serviceName
 						+ (clazz != null ? ":" + clazz.getName() : "") + "#" + req.getMethod(), t);
+				response.setStatus(500);
 				res.setError(createRpcFault(t));
 				JSON.encode(res, os);
 				handleError(sc, sl, serviceName, req, response, os, res, t);
 			} catch (Exception e) {
-				logger.log(Level.SEVERE, "failed to handle request for " + serviceName
+				log.error("failed to handle request for " + serviceName
 						+ (clazz != null ? ":" + clazz.getName() : "") + "#" + req.getMethod(), e);
 				response.setStatus(500);
 				res.setError(createRpcFault(e));
@@ -154,7 +156,7 @@ public abstract class JsonRpcDynamicHandlerWithErrorHandler extends AbstractJson
 			os.flush();
 		} catch (IOException e) {
 			response.setStatus(500);
-			logger.log(Level.WARNING, "IOException occurred.", e);
+			log.warn("IOException occurred.", e);
 		}
 	}
 
