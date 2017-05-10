@@ -38,6 +38,11 @@ public class UserAccountsTable extends RelationalModel<UserAccount> {
 		addColumnDefinition(OPTIONS, Keyword.VARCHAR);
 	}
 
+	@Override
+	public void createIndexes() {
+
+	}
+
 	public boolean validate(String userId, String password) {
 		UserAccount u = readByPrimaryKey(userId);
 		return u.validate(password);
