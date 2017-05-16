@@ -7,8 +7,11 @@ import java.util.function.Consumer;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.nkjmlab.webui.service.user.model.UserAccount;
 
 public class ThymeleafModel {
+
+	private static final String CURRENT_USER = "currentUser";
 
 	private Map<String, Object> variableMap = new LinkedHashMap<>();
 	private Locale locale = Locale.US;
@@ -59,6 +62,10 @@ public class ThymeleafModel {
 
 	public void setErrorHandler(Consumer<Throwable> handler) {
 		this.handler = handler;
+	}
+
+	public void setCurrentUser(UserAccount ua) {
+		put(CURRENT_USER, ua);
 	}
 
 }

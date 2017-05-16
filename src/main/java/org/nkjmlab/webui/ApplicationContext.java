@@ -2,11 +2,15 @@ package org.nkjmlab.webui;
 
 import java.io.File;
 import java.net.URL;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import org.apache.logging.log4j.Logger;
+import org.nkjmlab.util.concurrent.NamedSingleThreadFactory;
 import org.nkjmlab.util.db.DbClient;
 import org.nkjmlab.util.db.DbClientFactory;
 import org.nkjmlab.util.db.DbConfig;
@@ -14,6 +18,7 @@ import org.nkjmlab.util.db.H2ClientWithConnectionPool;
 import org.nkjmlab.util.db.H2ConfigFactory;
 import org.nkjmlab.util.db.H2Server;
 import org.nkjmlab.util.io.FileUtils;
+import org.nkjmlab.util.lang.RuntimeUtils;
 import org.nkjmlab.util.log4j.Log4jConfigurator;
 import org.nkjmlab.util.log4j.LogManager;
 import org.nkjmlab.util.net.UrlUtils;
@@ -27,6 +32,10 @@ public abstract class ApplicationContext implements ServletContextListener {
 	private static H2ClientWithConnectionPool client;
 	private static File databaseDir;
 	private static URL slackWebhookUrl;
+
+	protected static final ScheduledExecutorService scheduleTasksService = Executors
+			.newSingleThreadScheduledExecutor(
+					new NamedSingleThreadFactory("scheduled-tasks", true));
 
 	static {
 		Log4jConfigurator.setOverride(false);
@@ -74,6 +83,12 @@ public abstract class ApplicationContext implements ServletContextListener {
 	public static void asyncPostMessage(String channel, String username, String text) {
 		SlackMessengerService.asyncPostMessage(slackWebhookUrl,
 				new SlackMessage(channel, username, text));
+	}
+
+	protected void addLoggingMemoryUsageTask(long intervalMin) {
+		scheduleTasksService.scheduleWithFixedDelay(() -> {
+			log.info(RuntimeUtils.getMemoryUsege());
+		}, 0, intervalMin, TimeUnit.MINUTES);
 	}
 
 }

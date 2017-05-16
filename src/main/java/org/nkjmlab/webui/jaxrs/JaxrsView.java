@@ -18,7 +18,6 @@ import org.apache.logging.log4j.Logger;
 import org.glassfish.jersey.server.mvc.Viewable;
 import org.nkjmlab.util.log4j.LogManager;
 import org.nkjmlab.webui.jaxrs.thymeleaf.ThymeleafModel;
-import org.nkjmlab.webui.service.user.model.UserAccount;
 import org.nkjmlab.webui.util.servlet.ServletUrlUtils;
 import org.nkjmlab.webui.util.servlet.UserRequest;
 import org.nkjmlab.webui.util.servlet.UserSession;
@@ -146,16 +145,6 @@ public abstract class JaxrsView {
 
 	protected UserRequest getUserRequest() {
 		return UserRequest.of(request);
-	}
-
-	protected ThymeleafModel createModelWithUserAccountIfExists(UserAccount ua) {
-		ThymeleafModel model = new ThymeleafModel();
-		if (ua == null) {
-			return model;
-		}
-		model.put("currentUser", ua);
-		model.setLocale(ua.getLocale());
-		return model;
 	}
 
 }
