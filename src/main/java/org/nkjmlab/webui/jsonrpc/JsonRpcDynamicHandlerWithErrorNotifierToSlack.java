@@ -43,7 +43,7 @@ public class JsonRpcDynamicHandlerWithErrorNotifierToSlack
 
 			SlackMessengerService.asyncPostMessage(postUrl,
 					new SlackMessage(channel, (username != null ? username : serviceName),
-							createJsonRpcFaultMessage(sc, req, t), icon));
+							createJsonRpcFaultMessage(sc, req, t), "", icon));
 		} catch (Exception e) {
 			log.error(e, e);
 		}
