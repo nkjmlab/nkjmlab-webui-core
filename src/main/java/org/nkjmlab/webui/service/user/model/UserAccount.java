@@ -180,7 +180,15 @@ public class UserAccount implements RelatedWithTable {
 	}
 
 	public boolean isAdmin() {
-		return getRole().equals(Role.ADMIN.name());
+		return getRoleObject().getLevel() >= Role.ADMIN.getLevel();
+	}
+
+	private Role getRoleObject() {
+		return Role.valueOf(getRole());
+	}
+
+	public boolean isOperator() {
+		return getRoleObject().getLevel() >= Role.RESTRICTED_OPERATOR.getLevel();
 	}
 
 	public boolean isSameUserAccount(UserAccount account) {

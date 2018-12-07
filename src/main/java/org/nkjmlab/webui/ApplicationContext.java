@@ -6,6 +6,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
@@ -32,6 +33,7 @@ public abstract class ApplicationContext implements ServletContextListener {
 	private static H2ClientWithConnectionPool client;
 	private static File databaseDir;
 	private static URL slackWebhookUrl;
+	private static ServletContext servletContext;
 
 	protected static final ScheduledExecutorService scheduleTasksService = Executors
 			.newSingleThreadScheduledExecutor(
@@ -44,6 +46,10 @@ public abstract class ApplicationContext implements ServletContextListener {
 		//ThymeleafTemplateProcessor.setcacheTTLMs(60 * 1000L);
 	}
 
+	public static ServletContext getServletContext() {
+		return servletContext;
+	}
+
 	public static DbClient getDbClient() {
 		if (client == null) {
 			throw new RuntimeException("Database name should be set.");
@@ -52,17 +58,16 @@ public abstract class ApplicationContext implements ServletContextListener {
 	}
 
 	public void contextInitialized(ServletContextEvent event, String dbName, String slackUrl) {
-		if (client == null) {
-			databaseDir = FileUtils
-					.getFileInUserDirectory("h2-db/" + event.getServletContext().getContextPath());
-			DbConfig conf = H2ConfigFactory.create(new File(databaseDir, dbName));
-			log.info(conf);
-			client = DbClientFactory.createH2ClientWithConnectionPool(conf);
-		}
-		if (slackWebhookUrl == null) {
-			slackWebhookUrl = UrlUtils.of(slackUrl);
-			log.info(slackUrl);
-		}
+		servletContext = event.getServletContext();
+
+		FileUtils.getFileInUserDirectory("h2-db").mkdirs();
+		databaseDir = FileUtils
+				.getFileInUserDirectory("h2-db/" + event.getServletContext().getContextPath());
+		DbConfig conf = H2ConfigFactory.create(new File(databaseDir, dbName));
+		log.info(conf);
+		client = DbClientFactory.createH2ClientWithConnectionPool(conf);
+		slackWebhookUrl = UrlUtils.of(slackUrl);
+		log.info(slackUrl);
 	}
 
 	@Override
@@ -74,6 +79,10 @@ public abstract class ApplicationContext implements ServletContextListener {
 
 	public static URL getSlackWebhookUrl() {
 		return slackWebhookUrl;
+	}
+
+	public static File getDatabaseDir() {
+		return databaseDir;
 	}
 
 	public static void asyncPostException(String channel, String username, Throwable e) {
@@ -89,6 +98,10 @@ public abstract class ApplicationContext implements ServletContextListener {
 		scheduleTasksService.scheduleWithFixedDelay(() -> {
 			log.info(RuntimeUtils.getMemoryUsege());
 		}, 0, intervalMin, TimeUnit.MINUTES);
+	}
+
+	protected void setDbMaxConnections(int maxConnections) {
+		client.setMaxConnections(maxConnections);
 	}
 
 }

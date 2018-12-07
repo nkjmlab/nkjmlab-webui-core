@@ -58,7 +58,7 @@ public class UserAccountService extends JsonRpcService implements UserAccountSer
 		return true;
 	}
 
-	private UserAccount getCurrentUserAccount() {
+	public UserAccount getCurrentUserAccount() {
 		return userAccountsTable.findByUserSession(getUserSession());
 	}
 

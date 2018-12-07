@@ -6,6 +6,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -117,7 +118,7 @@ public abstract class JsonRpcDynamicHandlerWithErrorHandler extends AbstractJson
 				res.setId(req.getId());
 				res.setHeaders(resHeaders.toArray(new RpcHeader[] {}));
 				res.setResult(result);
-				Writer w = new OutputStreamWriter(os, "UTF-8");
+				Writer w = new OutputStreamWriter(os, StandardCharsets.UTF_8);
 				try {
 					String cb = req.getCallback();
 					if (cb != null) {

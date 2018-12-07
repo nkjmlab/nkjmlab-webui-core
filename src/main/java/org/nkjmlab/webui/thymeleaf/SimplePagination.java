@@ -94,7 +94,6 @@ public class SimplePagination {
 
 	public String getUrlForOtherPage(HttpServletRequest request, int page, String encoding)
 			throws UnsupportedEncodingException {
-		@SuppressWarnings("unchecked")
 		Map<String, String[]> params = request.getParameterMap();
 		StringBuilder builder = new StringBuilder();
 		builder.append(request.getRequestURI());
