@@ -33,15 +33,18 @@
 	</scm>
 
 	<properties>
-		<langrid-version>1.0.15</langrid-version>
-		<jersey-version>2.27</jersey-version>
-		<tomcat-embed-version>8.0.53</tomcat-embed-version>
+		<jackson-version>2.8.7</jackson-version>
 	</properties>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.nkjmlab</groupId>
 			<artifactId>nkjmlab-utils</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.nkjmlab</groupId>
+			<artifactId>nkjmlab-utils-thymeleaf</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.nkjmlab</groupId>
@@ -54,20 +57,22 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-web</artifactId>
+			<version>${log4j-version}</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/javax/javaee-web-api -->
+		<dependency>
 			<groupId>javax</groupId>
 			<artifactId>javaee-web-api</artifactId>
-			<version>7.0</version>
+			<version>8.0</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>javax.websocket</groupId>
 			<artifactId>javax.websocket-api</artifactId>
 			<version>1.1</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<version>4.0.1</version>
 			<scope>provided</scope>
 		</dependency>
 		<!-- jaxrx START -->
@@ -128,44 +133,6 @@
 		</dependency>
 
 
-		<!-- tomcat-embed START -->
-		<dependency>
-			<groupId>org.apache.tomcat.embed</groupId>
-			<artifactId>tomcat-embed-core</artifactId>
-			<version>${tomcat-embed-version}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.tomcat.embed</groupId>
-			<artifactId>tomcat-embed-websocket</artifactId>
-			<version>${tomcat-embed-version}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.tomcat.embed</groupId>
-			<artifactId>tomcat-embed-logging-juli</artifactId>
-			<version>${tomcat-embed-version}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.tomcat.embed</groupId>
-			<artifactId>tomcat-embed-logging-log4j</artifactId>
-			<version>${tomcat-embed-version}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.tomcat</groupId>
-			<artifactId>tomcat-servlet-api</artifactId>
-			<version>${tomcat-embed-version}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.tomcat</groupId>
-			<artifactId>tomcat-jasper</artifactId>
-			<version>${tomcat-embed-version}</version>
-			<scope>provided</scope>
-		</dependency>
-		<!-- tomcat-embed END -->
 		<!-- jaxrs+json START -->
 		<dependency>
 			<groupId>org.glassfish.jersey.media</groupId>
@@ -175,18 +142,18 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.dataformat</groupId>
 			<artifactId>jackson-dataformat-smile</artifactId>
-			<version>2.8.7</version>
+			<version>${jackson-version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.jaxrs</groupId>
 			<artifactId>jackson-jaxrs-json-provider</artifactId>
-			<version>2.8.7</version>
+			<version>${jackson-version}</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.jaxrs/jackson-jaxrs-base -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.jaxrs</groupId>
 			<artifactId>jackson-jaxrs-base</artifactId>
-			<version>2.8.7</version>
+			<version>${jackson-version}</version>
 		</dependency>
 		<!-- jaxrs+json END -->
 		<!-- jaxrs+msgpack STRT -->
